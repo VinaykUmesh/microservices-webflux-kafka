@@ -1,0 +1,37 @@
+server:
+  port: 8081  # Configures the external port number for the application
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/product_server?createDatabaseIfNotExist=true  # Specifies the URL, port, and database name for MySQL connection
+    username: root  # Placeholder for MySQL username
+    password: p@ss123!  # Placeholder for MySQL password
+  jpa:
+    hibernate:
+      ddl-auto: update  # Automatic database structure updates
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: product-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka Server URL
+    register-with-eureka: true  # Set to true to register with the Eureka Server
+    fetch-registry: true  # Set to true to allow fetching the registry information
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}

@@ -1,0 +1,30 @@
+server:
+  port: 8082  # Configures the external port number for the Order Service
+
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_server?createDatabaseIfNotExist=true  # Specifies the URL, port, and database name for MySQL connection
+    username: root  # Placeholder for MySQL username
+    password: p@ss123!  # Placeholder for MySQL password
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka Server URL
+    register-with-eureka: true  # Registers the Order Service with the Eureka Server
+    fetch-registry: true  # Allows fetching registry information
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    ip-address: 127.0.0.1  # Configures the instance to prefer the IP address
+    instance-id: ${spring.application.name}:${server.port}
